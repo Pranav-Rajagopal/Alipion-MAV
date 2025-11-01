@@ -214,7 +214,7 @@ type();
 // Intro out
 startBtn.onclick=()=>{
  document.getElementById('enterSound').play();
- setTimeout(()=>{document.getElementById('bgSound').play();},1200);
+ setTimeout(()=>{document.getElementById('bg-loop').play();},1200);
  gsap.to("#intro",{opacity:0,y:-120,duration:1.3,ease:"power2.out",onComplete:()=>{
   intro.style.display="none";
   // show founders intro
