@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Elite Sci-Tech Prototype — v3</title>
+<title>Elite Sci-Tech Prototype — v4 (Cinematic)</title>
 
 <!-- Fonts + GSAP -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -11,94 +11,123 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <style>
+  /* ==========================
+     THEME: black + neon green
+     ========================== */
   :root{
     --neon: #00ff7f;
-    --neon-weak: rgba(0,255,127,0.18);
+    --neon-strong: rgba(0,255,127,1);
+    --neon-soft: rgba(0,255,127,0.16);
     --bg: #000;
     --panel: rgba(0,0,0,0.66);
     --glass: rgba(0,255,127,0.04);
-    --max-width: 1200px;
-    --radius: 12px;
+    --maxw: 1200px;
+    --radius: 14px;
   }
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--neon);font-family:"Poppins",sans-serif;-webkit-font-smoothing:antialiased}
-  *,*::before,*::after{box-sizing:border-box}
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--neon);font-family:"Poppins",sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
   a{color:inherit;text-decoration:none}
+  button{font-family:inherit}
 
-  /* background */
-  #gridBg{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.36;background:
-    radial-gradient(circle at 10% 10%, rgba(0,255,127,0.03) 0%, rgba(0,0,0,0.9) 60%),
-    repeating-linear-gradient(#00261a 0px,#00261a 2px,transparent 2px,transparent 56px),
-    repeating-linear-gradient(90deg,#00261a 0px,#00261a 2px,transparent 2px,transparent 56px);
-    filter:contrast(1.05) saturate(1.12);
+  /* subtle grid + vignette background */
+  #gridBg{
+    position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.36;
+    background:
+      radial-gradient(circle at 8% 12%, rgba(0,255,127,0.03) 0%, rgba(0,0,0,0.95) 60%),
+      repeating-linear-gradient(#00261a 0px,#00261a 2px,transparent 2px,transparent 56px),
+      repeating-linear-gradient(90deg,#00261a 0px,#00261a 2px,transparent 2px,transparent 56px);
+    filter:contrast(1.05) saturate(1.08);
   }
 
-  /* NEON LOADER */
-  #neonLoader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:110;background:linear-gradient(180deg, rgba(0,0,0,0.98), rgba(0,0,0,0.95));flex-direction:column;gap:14px}
-  #bootText{font-weight:600;letter-spacing:1.2px;color:var(--neon);opacity:0.96}
-  #bootLine{font-family:monospace;font-size:.9rem;color:rgba(0,255,127,0.6)}
-  .loader-dot{width:8px;height:8px;border-radius:99px;background:var(--neon);opacity:.85;margin:0 4px;display:inline-block;transform:scale(.9)}
+  /* ========= LOADER ========= */
+  #neonLoader{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;
+    z-index:200;background:linear-gradient(180deg, rgba(0,0,0,0.98), rgba(0,0,0,0.95));
+  }
+  #bootTitle{font-weight:700;font-size:1.05rem;letter-spacing:.6px;color:var(--neon)}
+  #bootStep{font-family:monospace;font-size:1.8rem;text-shadow:0 0 20px var(--neon)}
+  .loader-dots{display:flex;gap:8px}
+  .loader-dot{width:9px;height:9px;border-radius:50%;background:var(--neon);opacity:.9;transform:scale(.9);}
 
-  /* TYPING INTRO */
-  #intro{position:fixed;inset:0;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;z-index:100;background:linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.45))}
-  #typingText{font-size:3rem;font-weight:700;text-align:center;text-shadow:0 0 26px var(--neon);line-height:1.02}
-  #startBtn{margin-top:8px;padding:12px 34px;border-radius:12px;border:2px solid var(--neon);background:transparent;color:var(--neon);font-weight:700;cursor:pointer;transition:transform .14s, box-shadow .14s;opacity:0;transform:translateY(8px);outline:none}
-  #startBtn:hover{transform:scale(1.04);box-shadow:0 0 20px var(--neon);background:var(--neon);color:#000}
+  /* ========= INTRO (typing) ========= */
+  #intro{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+    z-index:180;background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.6));
+  }
+  #typingText{font-size:3rem;font-weight:800;text-align:center;line-height:1; text-shadow:0 0 26px var(--neon)}
+  #enterBtn{
+    margin-top:6px;padding:12px 34px;border-radius:12px;border:2px solid var(--neon);background:transparent;color:var(--neon);
+    font-weight:700;cursor:pointer;opacity:0;transform:translateY(10px);transition:all .36s;
+  }
+  #enterBtn:focus{outline:2px solid rgba(0,255,127,0.08)}
 
-  /* FOUNDERS - full-screen cinematic frames */
+  /* ========= FOUNDERS: FULLSCREEN CINEMATIC ========= */
+  #foundersWrap{position:fixed;inset:0;z-index:170;display:none;overflow:hidden;background:#000}
   .founderScreen{
-    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:95;background:rgba(0,0,0,0.85);flex-direction:column;padding:28px;gap:18px;opacity:0;pointer-events:none
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:28px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+    opacity:0;transform:scale(1);
   }
-  .founderContent{max-width:1100px;width:92%;display:flex;align-items:center;gap:36px}
-  .founderImage{flex:0 0 46%;height:60vh;border-radius:12px;overflow:hidden;border:2px solid rgba(0,255,127,0.12)}
+  .founderInner{display:flex;gap:40px;align-items:center;max-width:1200px;width:92%;justify-content:center;flex-wrap:wrap}
+  .founderImage{flex:0 0 420px;height:420px;border-radius:14px;overflow:hidden;border:3px solid rgba(0,255,127,0.12);box-shadow:0 40px 140px rgba(0,255,127,0.03)}
   .founderImage img{width:100%;height:100%;object-fit:cover;display:block}
-  .founderText{flex:1;text-align:left;color:rgba(0,255,127,0.95)}
-  .founderText h1{margin:0;font-size:2.2rem;letter-spacing:.8px;text-shadow:0 0 26px rgba(0,255,127,0.06)}
-  .founderText p.role{margin:.6rem 0 10px;color:var(--neon);font-weight:700}
-  .founderText p.bio{margin:0;color:rgba(0,255,127,0.86);line-height:1.6}
+  .founderText{flex:1;min-width:320px;text-align:left}
+  .founderText h1{margin:0;font-size:2.8rem;letter-spacing:.6px;text-shadow:0 0 30px rgba(0,255,127,0.08)}
+  .founderText p.role{margin:.6rem 0 14px;font-weight:700;color:var(--neon)}
+  .founderText p.bio{margin:0;max-width:780px;color:rgba(0,255,127,0.92);line-height:1.6;font-size:1.05rem}
 
-  /* MAIN (hidden until founders done) */
-  #main{opacity:0;visibility:hidden;position:relative;z-index:10;min-height:100vh}
-
-  /* HEADER (sticky) */
-  header{
-    position:sticky;top:0;z-index:70;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.35));backdrop-filter: blur(6px);
-    display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(0,255,127,0.04);
+  /* cinematic accent glow edges */
+  .founderScreen::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    box-shadow:inset 0 0 120px rgba(0,255,127,0.02);
   }
-  .brand{display:flex;align-items:center;gap:8px}
-  .logo{font-weight:800;letter-spacing:1px;font-size:1.05rem}
-  .tag{opacity:.7;font-size:.9rem}
 
-  /* top nav */
-  .topNav{display:flex;gap:10px;align-items:center;overflow:auto;padding:6px;border-radius:999px}
-  .topNav::-webkit-scrollbar{height:8px}
-  .navBtn{padding:10px 14px;border-radius:10px;border:1px solid rgba(0,255,127,0.09);background:transparent;cursor:pointer;white-space:nowrap;font-weight:700;transition:transform .12s,box-shadow .12s;color:var(--neon)}
-  /*Glow for nav text*/
-  .navBtn, .logo { text-shadow: 0 0 8px rgba(0,255,127,0.12), 0 0 18px rgba(0,255,127,0.06); }
+  /* ========= TOP NAVBAR ========= */
+  header{
+    position:sticky;top:0;z-index:150;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.28));
+    backdrop-filter: blur(6px);display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(0,255,127,0.04);
+  }
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{font-weight:800;letter-spacing:1px;font-size:1.05rem;text-shadow:0 0 12px rgba(0,255,127,0.08)}
+  .tag{opacity:.68;font-size:.92rem}
+
+  .navWrap{display:flex;gap:12px;align-items:center}
+  .nav{display:flex;gap:8px;align-items:center;overflow:auto;padding:6px;border-radius:999px}
+  .nav::-webkit-scrollbar{height:8px}
+  .navBtn{padding:8px 14px;border-radius:10px;border:1px solid rgba(0,255,127,0.06);background:transparent;color:var(--neon);font-weight:700;cursor:pointer;white-space:nowrap;transition:all .18s}
+  /* GLOWING NAV TEXT */
+  .navBtn{ text-shadow: 0 0 8px rgba(0,255,127,0.12), 0 0 18px rgba(0,255,127,0.06); }
   .navBtn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,255,127,0.06);border-color:var(--neon)}
-  .navBtn.active{background:linear-gradient(90deg, rgba(0,255,127,0.06), rgba(0,255,127,0.02));box-shadow:0 8px 40px rgba(0,255,127,0.04)}
+  .navBtn.active{background:linear-gradient(90deg, rgba(0,255,127,0.06), rgba(0,255,127,0.02));box-shadow:0 10px 40px rgba(0,255,127,0.04)}
 
-  /* scroll progress */
-  #scrollProgress{position:fixed;left:0;right:0;height:4px;top:0;z-index:120;background:linear-gradient(90deg, rgba(0,255,127,0.06), transparent)}
-  #scrollProgress > i{display:block;height:100%;width:0;background:linear-gradient(90deg, var(--neon), rgba(0,255,127,0.5));box-shadow:0 6px 20px rgba(0,255,127,0.12) inset;transition:width .1s linear}
+  /* scroll progress bar */
+  #scrollProgress{position:fixed;left:0;right:0;top:0;height:4px;z-index:260;background:linear-gradient(90deg, rgba(0,255,127,0.06), transparent)}
+  #scrollProgress > i{display:block;height:100%;width:0;background:linear-gradient(90deg, var(--neon), rgba(0,255,127,0.5));box-shadow:0 6px 20px rgba(0,255,127,0.12) inset;transition:width .08s linear}
 
-  /* page content */
-  main{padding:36px 18px 120px;display:flex;flex-direction:column;align-items:center;gap:36px;max-width:var(--max-width);margin:0 auto}
-  section{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 18px;text-align:center;gap:18px;opacity:0}
-  .title{font-size:2.1rem;font-weight:700;text-shadow:0 0 16px rgba(0,255,127,0.06)}
+  /* ========= MAIN SECTIONS ========= */
+  #main{min-height:100vh;opacity:0;visibility:hidden}
+  main{padding:40px 20px 140px;max-width:var(--maxw);margin:0 auto;display:flex;flex-direction:column;gap:40px}
+  section{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 12px;text-align:center;gap:18px;opacity:0}
+  .title{font-size:2.2rem;font-weight:800;text-shadow:0 0 18px rgba(0,255,127,0.06)}
   .sub{max-width:980px;color:rgba(0,255,127,0.92);line-height:1.7;font-size:1.02rem}
-  .panel{max-width:1100px;width:100%;margin-top:18px;display:flex;gap:20px;align-items:stretch;justify-content:center;flex-wrap:wrap}
-
-  .media-preview{width:640px;max-width:92%;height:360px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,255,127,0.08);box-shadow:0 12px 40px rgba(0,255,127,0.02)}
+  .panel{max-width:1100px;width:100%;display:flex;gap:18px;flex-wrap:wrap;align-items:stretch;justify-content:center}
+  .media-preview{width:640px;max-width:92%;height:360px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,255,127,0.08);box-shadow:0 12px 40px rgba(0,255,127,0.03)}
   .blog-card{background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.48));border-radius:12px;padding:18px;text-align:left;border:1px solid rgba(0,255,127,0.04)}
+  .tilt{transform-style:preserve-3d;will-change:transform;transition:transform .18s cubic-bezier(.2,.9,.3,1)}
 
-  /* tiltable */
-  .tiltable{transform-style:preserve-3d;will-change:transform;transition:transform .18s cubic-bezier(.2,.9,.3,1)}
-
-  /* CHAT (neon bubble icon + panel) */
-  #chatBtn{position:fixed;bottom:20px;right:20px;width:64px;height:64px;border-radius:999px;border:2px solid var(--neon);background:linear-gradient(180deg, rgba(0,255,127,0.03), rgba(0,255,127,0.01));display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:60;box-shadow:0 18px 60px rgba(0,255,127,0.06)}
-  #chatBtn svg{filter:drop-shadow(0 6px 22px rgba(0,255,127,0.08))}
-  #chatPanel{position:fixed;right:20px;bottom:96px;width:340px;max-width:92%;background:var(--panel);backdrop-filter: blur(8px);border-radius:12px;border:1px solid rgba(0,255,127,0.08);padding:12px;display:none;z-index:61}
-  .qa{margin:10px 0;border-radius:8px;overflow:hidden;border:1px solid rgba(0,255,127,0.06)}
+  /* ========= CHAT (VIPRADMA) ========= */
+  #chatBtn{
+    position:fixed;right:22px;bottom:20px;width:64px;height:64px;border-radius:999px;border:2px solid var(--neon);
+    background:linear-gradient(180deg, rgba(0,255,127,0.03), rgba(0,255,127,0.01));display:flex;align-items:center;justify-content:center;
+    z-index:240;cursor:pointer;box-shadow:0 18px 60px rgba(0,255,127,0.06)
+  }
+  #chatBtn svg{filter:drop-shadow(0 8px 28px rgba(0,255,127,0.06))}
+  #chatPanel{position:fixed;right:22px;bottom:96px;width:360px;max-width:92%;background:var(--panel);backdrop-filter:blur(8px);border-radius:12px;border:1px solid rgba(0,255,127,0.08);padding:12px;display:none;z-index:241}
+  #chatHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  #chatTitle{font-weight:800}
+  #chatClose{cursor:pointer;border-radius:8px;padding:6px}
+  .qa{margin:10px 0;border-radius:10px;overflow:hidden;border:1px solid rgba(0,255,127,0.06)}
   .qHead{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;background:linear-gradient(90deg, rgba(0,255,127,0.02), transparent)}
   .qHead strong{font-weight:700}
   .qBody{padding:10px 12px;background:rgba(0,0,0,0.45);color:rgba(0,255,127,0.95);display:none}
@@ -108,95 +137,98 @@
   .switch{width:40px;height:20px;border-radius:20px;background:rgba(255,255,255,0.03);position:relative;border:1px solid rgba(0,255,127,0.06)}
   .knob{position:absolute;left:4px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:12px;background:var(--neon);transition:left .18s}
 
-  footer{padding:40px 20px;text-align:center;color:rgba(0,255,127,0.6)}
-
-  /* cursor & trail (desktop only) */
-  .cursor{position:fixed;pointer-events:none;z-index:9999;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);mix-blend-mode:screen;display:none}
-  .cursorTrail{position:fixed;pointer-events:none;z-index:9998;display:none}
+  /* cursor trail (desktop only) */
+  .cursorDot{position:fixed;pointer-events:none;z-index:9999;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);display:none}
+  canvas.cursorTrail{position:fixed;pointer-events:none;z-index:9998;display:none}
 
   /* responsiveness */
   @media (max-width:980px){
-    .founderContent{flex-direction:column;gap:18px}
-    .founderImage{width:84%;height:42vh}
-    .founderText h1{font-size:1.6rem}
-    #typingText{font-size:2.2rem}
-    header{padding:12px 14px}
-    .media-preview{height:220px}
+    .founderInner{flex-direction:column;gap:20px}
+    .founderImage{width:72%;height:42vh}
+    .founderText h1{font-size:2rem}
+    #typingText{font-size:2rem}
+    header{padding:12px}
   }
   @media (max-width:640px){
-    #typingText{font-size:1.6rem}
-    .navBtn{padding:8px 10px;font-size:.95rem}
-    .cursor{display:none}
-    .cursorTrail{display:none}
-    .founderImage{height:34vh}
+    .founderImage{height:34vh;width:86%}
+    .founderText h1{font-size:1.6rem}
+    .navBtn{padding:8px 10px}
+    .cursorDot, canvas.cursorTrail{display:none}
+    #chatPanel{right:10px;left:10px;width:auto}
   }
 </style>
 </head>
 <body>
 
+<!-- background grid -->
 <div id="gridBg" aria-hidden="true"></div>
 
-<!-- Neon loader -->
+<!-- Audio (place in /assets/) -->
+<audio id="enterSound" src="assets/enter.mp3" preload="auto"></audio>
+<audio id="bgSound" src="assets/bg-loop.mp3" preload="auto" loop></audio>
+
+<!-- loader -->
 <div id="neonLoader" role="status" aria-live="polite">
-  <div id="bootText" style="font-size:1.2rem">Initializing system...</div>
-  <div id="bootLine">Boot sequence: <span id="bootStep">0%</span></div>
-  <div style="margin-top:10px">
-    <span class="loader-dot"></span><span class="loader-dot"></span><span class="loader-dot"></span>
+  <div id="bootTitle">Initializing system...</div>
+  <div id="bootStep">0%</div>
+  <div class="loader-dots">
+    <div class="loader-dot"></div><div class="loader-dot"></div><div class="loader-dot"></div>
   </div>
 </div>
 
-<!-- Typing intro -->
+<!-- typing intro -->
 <div id="intro" aria-hidden="true">
   <div id="typingText" aria-live="polite" aria-atomic="true"></div>
-  <button id="startBtn" aria-label="Enter site">Enter</button>
+  <button id="enterBtn" aria-label="Enter site">Enter</button>
 </div>
 
-<!-- Founders full-screen frames (generated by JS) -->
+<!-- full-screen founders wrapper (populated by JS) -->
 <div id="foundersWrap" aria-hidden="true"></div>
 
-<!-- Scroll progress bar -->
+<!-- scroll progress -->
 <div id="scrollProgress" aria-hidden="true"><i></i></div>
 
-<!-- Main content (revealed after founders) -->
-<div id="main" aria-hidden="true">
-  <header role="banner">
-    <div class="brand">
-      <div class="logo">SNP • Morphine Engine</div>
-      <div class="tag" style="opacity:.6;margin-left:6px">Prototype • Research • Education</div>
-    </div>
+<!-- top header -->
+<header role="banner">
+  <div class="brand">
+    <div class="logo">SNP • Morphine Engine</div>
+    <div class="tag">Prototype • Research • Education</div>
+  </div>
 
-    <div style="display:flex;align-items:center;gap:12px">
-      <nav class="topNav" role="navigation" aria-label="Primary">
-        <button class="navBtn" data-target="product">Product</button>
-        <button class="navBtn" data-target="vision">Vision</button>
-        <button class="navBtn" data-target="propulsion">Propulsion</button>
-        <button class="navBtn" data-target="safety">Safety</button>
-        <button class="navBtn" data-target="ai">AI / Landing</button>
-        <button class="navBtn" data-target="blog">Blog</button>
-      </nav>
-
-      <div id="soundToggle" title="Toggle ambient sound" role="button" tabindex="0" aria-pressed="false">
-        <div style="font-size:.9rem;opacity:.85">Sound</div>
+  <div class="navWrap">
+    <nav class="nav" role="navigation" aria-label="Primary">
+      <button class="navBtn" data-target="product">Product</button>
+      <button class="navBtn" data-target="vision">Vision</button>
+      <button class="navBtn" data-target="propulsion">Propulsion</button>
+      <button class="navBtn" data-target="safety">Safety</button>
+      <button class="navBtn" data-target="ai">AI / Landing</button>
+      <button class="navBtn" data-target="blog">Blog</button>
+    </nav>
+    <div style="margin-left:12px">
+      <div id="soundToggle" role="button" tabindex="0" aria-pressed="false" title="Toggle ambient sound">
+        <div style="font-size:.9rem;opacity:.84">Sound</div>
         <div class="switch"><div class="knob" id="knob"></div></div>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
+<!-- main content (hidden until cinematic end) -->
+<div id="main" aria-hidden="true">
   <main>
     <!-- Product -->
     <section id="product" tabindex="-1">
       <div class="title">Rocket Prototype</div>
       <p class="sub">High-fidelity prototype featuring AI-assisted landing and a fuel-fed propulsion core.</p>
-
       <div class="panel">
-        <div class="media-preview tiltable" data-tilt>
-          <img src="assets/placeholder-rocket.jpg" alt="Rocket placeholder" style="width:100%;height:100%;object-fit:cover" loading="lazy">
+        <div class="media-preview tilt" data-tilt>
+          <img src="assets/placeholder-rocket.jpg" alt="Rocket" style="width:100%;height:100%;object-fit:cover" loading="lazy">
         </div>
-        <div style="max-width:420px;text-align:left;">
-          <h4 style="margin:0 0 12px 0;">Prototype highlights</h4>
-          <ul style="text-align:left;color:rgba(0,255,127,0.85);line-height:1.6;">
+        <div class="blog-card">
+          <h4>Prototype highlights</h4>
+          <ul>
             <li>AI-integrated landing stabilization</li>
-            <li>3D printed SS304L nozzle components</li>
+            <li>3D-printed SS304L nozzle components</li>
             <li>Modular propulsion testbed</li>
           </ul>
         </div>
@@ -206,118 +238,103 @@
     <!-- Vision -->
     <section id="vision" tabindex="-1">
       <div class="title">Project Vision</div>
-      <p class="sub">Democratize aerospace research and bring scalable student innovation to competition arenas and real-world tests.</p>
+      <p class="sub">Democratize aerospace research and bring scalable student innovation to competitions and real-world tests.</p>
     </section>
 
     <!-- Propulsion -->
     <section id="propulsion" tabindex="-1">
       <div class="title">Propulsion & Materials</div>
-      <div class="panel" style="max-width:1000px;">
-        <div class="blog-card tiltable" data-tilt style="flex:1;">
-          <h4>Materials & Hardware</h4>
-          <p>3D-printed SS 304L structural elements, Teflon seals, A2212 BLDC actuators and MPU-6050 IMU for stabilization and telemetry.</p>
-        </div>
-        <div class="blog-card tiltable" data-tilt style="flex:1;">
-          <h4>Chemistry & Performance</h4>
-          <p>Engine testing used controlled propellant concentrations under supervised lab conditions.</p>
-        </div>
+      <div class="panel">
+        <div class="blog-card tilt" data-tilt><h4>Materials & Hardware</h4><p>3D-printed SS304L elements, Teflon seals, BLDC actuators and MPU-6050 IMU for telemetry.</p></div>
+        <div class="blog-card tilt" data-tilt><h4>Chemistry & Performance</h4><p>Engine testing used controlled propellant concentrations under supervised lab conditions.</p></div>
       </div>
     </section>
 
     <!-- Safety -->
     <section id="safety" tabindex="-1">
       <div class="title">Safety & Protocol</div>
-      <p class="sub">All chemical handling and testing followed supervised protocols to minimize risk during development and experiments.</p>
+      <p class="sub">Testing followed supervised protocols and expert guidance to minimize risk during experiments.</p>
     </section>
 
     <!-- AI -->
     <section id="ai" tabindex="-1">
       <div class="title">AI Assisted Landing</div>
-      <p class="sub">AI algorithms for descent control and stabilization — a capability that brings student projects closer to practical demos.</p>
+      <p class="sub">AI algorithms for descent control and stabilization — bringing student-built projects closer to practical demos.</p>
     </section>
 
     <!-- Blog -->
     <section id="blog" tabindex="-1">
-      <div class="title">Blog — How SNP Helped Build The Morphine</div>
+      <div class="title">Blog — The Morphine Engine</div>
+      <div class="blog-card" style="max-width:1000px">
+        <p>The rocket engine was built by students <strong>Vishwajeeth V</strong>, <strong>Adikeshav S</strong>, and <strong>Mahilesh</strong> with school mentorship and safety oversight.</p>
+      </div>
 
-      <div class="panel" style="flex-direction:column;align-items:center;">
-        <div class="blog-card" style="max-width:1000px;">
-          <h4>Overview</h4>
-          <p>The rocket engine was created through constant hard work by <strong>Vishwajeeth V</strong> and supported by <strong>Adikeshav S</strong> of XI Topaz. Shree Niketan Patasala, West Tambaram, provided facilities, mentorship and technical backing.</p>
-          <h4>Technical highlights</h4>
-          <p>Core materials and components include 3D-printed SS304L, Teflon seals, A2212 BLDC motors and an MPU-6050 IMU.</p>
-        </div>
-
-        <div style="margin-top:18px;width:100%;max-width:900px;">
-          <div class="media-preview tiltable" data-tilt>
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/0x8x2FamBlk?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-          </div>
-        </div>
+      <div class="media-preview" style="margin-top:18px">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/0x8x2FamBlk?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>
     </section>
   </main>
 
-  <footer>
-    Credits: Pranav R • SNP Labs
-  </footer>
+  <footer style="padding:44px 20px;text-align:center;color:rgba(0,255,127,0.62)">Credits: SNP Labs • Developed by Pranav R</footer>
 </div>
 
-<!-- Chat bubble icon -->
-<button id="chatBtn" title="Chat" aria-haspopup="dialog" aria-expanded="false" aria-controls="chatPanel">
-  <!-- neon-green chat bubble svg -->
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="none" fill="white" opacity="0.02"/>
-    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="none" fill="none"/>
-    <circle cx="8.5" cy="11" r="1.3" fill="#00ff7f"/>
-    <circle cx="12" cy="11" r="1.3" fill="#00ff7f"/>
-    <circle cx="15.5" cy="11" r="1.3" fill="#00ff7f"/>
-  </svg>
+<!-- VIPRADMA Chat button -->
+<button id="chatBtn" aria-label="Open chat (VIPRADMA)">
+  <!-- small neon bubble icon (filled with neon) -->
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 6.5A2.5 2.5 0 0 0 18.5 4H5.5A2.5 2.5 0 0 0 3 6.5v9A2.5 2.5 0 0 0 5.5 18H6v3l4.5-3H18.5A2.5 2.5 0 0 0 21 15.5v-9z" fill="var(--neon)"/></svg>
 </button>
 
-<!-- Chat panel -->
+<!-- VIPRADMA Chat panel -->
 <div id="chatPanel" role="dialog" aria-hidden="true">
-  <div style="font-weight:800;margin-bottom:8px">VIP Chat</div>
+  <div id="chatHeader">
+    <div id="chatTitle">VIPRADMA</div>
+    <div id="chatClose" title="Close" role="button" tabindex="0">✕</div>
+  </div>
 
   <div class="qa">
     <div class="qHead" role="button" tabindex="0"><strong>What is this project?</strong><span>+</span></div>
-    <div class="qBody">A student-built fuel-based rocket prototype with AI-assisted landing.</div>
+    <div class="qBody">A student-built fuel-based rocket prototype with AI-assisted landing and modular propulsion testing.</div>
   </div>
 
   <div class="qa">
     <div class="qHead" role="button" tabindex="0"><strong>Who built this?</strong><span>+</span></div>
-    <div class="qBody">Developed by students (Vishwajeeth V, Adikeshav S, Mahilesh) with support from SNP school.</div>
+    <div class="qBody">Built by students: Vishwajeeth V, Adikeshav S, Mahilesh — with facilities and mentorship from SNP Labs.</div>
   </div>
 
   <div class="qa">
     <div class="qHead" role="button" tabindex="0"><strong>Future goals?</strong><span>+</span></div>
-    <div class="qBody">Refine propulsion, improve safety, enter competitions and scale research collaboration.</div>
+    <div class="qBody">Refine propulsion, optimize safety, compete in science fairs and scale research collaboration.</div>
   </div>
 </div>
 
-<!-- Audio -->
-<audio id="enterSound" src="assets/enter.mp3" preload="auto"></audio>
-<audio id="bgSound" src="assets/bg-loop.mp3" preload="auto" loop></audio>
-
-<!-- Cursor & canvas -->
-<div class="cursor" id="cursorDot" aria-hidden="true"></div>
-<canvas id="cursorTrail" class="cursorTrail" aria-hidden="true"></canvas>
+<!-- cursor trail -->
+<div class="cursorDot" id="cursorDot" aria-hidden="true"></div>
+<canvas class="cursorTrail" id="cursorTrail" aria-hidden="true"></canvas>
 
 <script>
-/* Defensive plugin registration */
-try { gsap.registerPlugin(ScrollTrigger); } catch(e){ console.warn('gsap register failed', e); }
+/* =========================================================
+   v4 cinematic script
+   - auto typing intro -> auto founder cinematic -> reveal main
+   - VIPRADMA chat, collapsible Q&A
+   - neon cursor trail (desktop)
+   - tilt interaction for .tilt elements
+   ========================================================= */
+try { gsap.registerPlugin(ScrollTrigger); } catch(e){ console.warn('GSAP missing', e); }
 
-/* Elements */
+/* ------- DOM refs ------- */
 const neonLoader = document.getElementById('neonLoader');
 const bootStep = document.getElementById('bootStep');
 const intro = document.getElementById('intro');
 const typingText = document.getElementById('typingText');
-const startBtn = document.getElementById('startBtn');
+const enterBtn = document.getElementById('enterBtn');
 const foundersWrap = document.getElementById('foundersWrap');
-const main = document.getElementById('main');
+const mainWrap = document.getElementById('main');
 const scrollProgress = document.querySelector('#scrollProgress > i');
 const navBtns = document.querySelectorAll('.navBtn');
 const chatBtn = document.getElementById('chatBtn');
 const chatPanel = document.getElementById('chatPanel');
+const chatClose = document.getElementById('chatClose');
+const qHeads = document.querySelectorAll('.qHead');
 const enterSound = document.getElementById('enterSound');
 const bgSound = document.getElementById('bgSound');
 const soundToggle = document.getElementById('soundToggle');
@@ -325,59 +342,60 @@ const knob = document.getElementById('knob');
 const cursorDot = document.getElementById('cursorDot');
 const trailCanvas = document.getElementById('cursorTrail');
 
-/* Founders taken from your uploaded code */
+/* ------- Founders data (from your uploaded file) ------- */
 const founders = [
   {id:'vish', name:'Vishwajeeth V', role:'Lead Rocket Engineer', bio:'Lead on nozzle design, test protocols and assembly. Focused on high temperature materials and structural integrity.', img:'assets/Vishwajeeth.jpg'},
   {id:'adhi', name:'Adikeshav S', role:'Systems & Control Engineer', bio:'Embedded systems lead — sensor fusion, flight control and AI-assisted stabilization algorithms.', img:'assets/Adhikesav.jpg'},
   {id:'mahi', name:'Mahilesh', role:'Operations & Mission Support', bio:'Mission planning, operations coordination and test logistics. Ensures safety and documentation during tests.', img:'assets/Mahilesh.jpg'}
 ];
 
-/* ---------- Boot loader ---------- */
-(function boot(){
+/* ------- Boot loader (progress fake) ------- */
+(function bootSequence(){
   let pct = 0;
   const t = setInterval(()=>{
     pct += Math.floor(Math.random()*9)+6;
     if (pct >= 100) pct = 100;
     bootStep.textContent = pct + '%';
-    if (pct >= 100){
+    if (pct >= 100) {
       clearInterval(t);
-      gsap.to(neonLoader, {opacity:0, duration:.7, delay:.5, onComplete:()=> neonLoader.style.display='none'});
-      setTimeout(()=> startTyping(), 700);
+      gsap.to(neonLoader, {opacity:0, duration:.7, delay:.4, onComplete: ()=> neonLoader.style.display = 'none'});
+      setTimeout(startTyping, 600);
     }
-  }, 110);
+  }, 100);
 })();
 
-/* ---------- Typing effect ---------- */
-const fullMsg = "Ready to dive in?";
+/* ------- Typing intro (auto starts enter after a pause) ------- */
+const introMsg = "Ready to dive in?";
 function startTyping(){
+  intro.style.display = 'flex';
   intro.setAttribute('aria-hidden','false');
   typingText.textContent = '';
-  startBtn.style.opacity = 0; startBtn.style.transform = 'translateY(8px)';
+  enterBtn.style.opacity = 0; enterBtn.style.transform = 'translateY(10px)';
   let i = 0;
-  const speed = 60;
-  function type(){
-    if (i < fullMsg.length){
-      typingText.textContent += fullMsg[i++];
-      gsap.fromTo(typingText, {textShadow:'0 0 6px rgba(0,255,127,0.06)'}, {textShadow:'0 0 26px rgba(0,255,127,0.22)', duration:.14});
-      setTimeout(type, speed);
+  const speed = 58;
+  (function typeChar(){
+    if (i < introMsg.length) {
+      typingText.textContent += introMsg[i++];
+      gsap.fromTo(typingText, {textShadow:'0 0 6px rgba(0,255,127,0.06)'}, {textShadow:'0 0 26px rgba(0,255,127,0.22)', duration:.12});
+      setTimeout(typeChar, speed);
     } else {
-      gsap.to(startBtn, {opacity:1, y:0, duration:.45, ease:'power2.out'});
-      startBtn.focus();
+      gsap.to(enterBtn, {opacity:1, y:0, duration:.45, ease:'power2.out'});
+      // auto-click after 1.2s to start cinematic (gives user a chance to press ESC)
+      setTimeout(()=> enterBtn.click(), 1200);
     }
-  }
-  setTimeout(type, 200);
+  })();
 }
 
-/* ---------- Build full-screen founder frames ---------- */
-function buildFullFounderScreens(){
+/* ------- Build full-screen founder screens dynamically ------- */
+function buildFounderScreens(){
   foundersWrap.innerHTML = '';
-  founders.forEach((f,i) => {
-    const container = document.createElement('div');
-    container.className = 'founderScreen';
-    container.id = `founder-${f.id}`;
-    container.innerHTML = `
-      <div class="founderContent" role="dialog" aria-label="${f.name} introduction">
-        <div class="founderImage"><img src="${f.img}" alt="${f.name} photo" loading="lazy"></div>
+  founders.forEach((f, i)=>{
+    const screen = document.createElement('section');
+    screen.className = 'founderScreen';
+    screen.id = 'founder-' + (f.id || i);
+    screen.innerHTML = `
+      <div class="founderInner" role="dialog" aria-label="${f.name} introduction">
+        <div class="founderImage"><img src="${f.img}" alt="${f.name}"></div>
         <div class="founderText">
           <h1>${f.name}</h1>
           <p class="role">${f.role}</p>
@@ -385,82 +403,85 @@ function buildFullFounderScreens(){
         </div>
       </div>
     `;
-    foundersWrap.appendChild(container);
+    foundersWrap.appendChild(screen);
   });
 }
-buildFullFounderScreens();
+buildFounderScreens();
 
-/* ---------- Start site: typing -> founders cinematic -> main ---------- */
-startBtn.addEventListener('click', startSite);
-startBtn.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') startBtn.click(); });
+/* ------- Enter button triggers the cinematic sequence ------- */
+enterBtn.addEventListener('click', startCinematic);
+enterBtn.addEventListener('keyup', (e)=> { if (e.key === 'Enter') startCinematic(); });
 
-function startSite(){
-  // play short enter sound
-  try { if (enterSound) { const p = enterSound.play(); if (p && p.catch) p.catch(()=>{}); } } catch(e){}
-
-  // hide intro
-  gsap.to(intro, {opacity:0, y:-80, duration:.9, ease:'power3.inOut', onComplete: ()=> intro.style.display='none' });
-
-  // show founders cinematic after short delay
-  setTimeout(()=> runFounderSequence(), 700);
-  // start background sound later if toggled on
+function startCinematic(){
+  // small enter audio if allowed
+  try { enterSound.play().catch(()=>{}); } catch(e) {}
+  // animate intro out
+  gsap.to(intro, {opacity:0, y:-80, duration:.85, ease:'power3.inOut', onComplete: ()=> { intro.style.display='none' }});
+  // wait and then run founders cinematic
   setTimeout(()=> {
-    if (knob && knob.dataset && knob.dataset.on === 'true') {
-      try { const p = bgSound.play(); if (p && p.catch) p.catch(()=>{}); } catch(e){}
-    }
-  }, 1200);
+    runFoundersCinematic();
+    // try starting bg music when founders cinematic begins (may be blocked on some browsers)
+    setTimeout(()=> {
+      try { const p = bgSound.play(); if (p && p.catch) p.catch(()=>{}); } catch(e) {}
+    }, 300);
+  }, 700);
 }
 
-/* ---------- Founder cinematic (full-screen automatic) ---------- */
-function runFounderSequence(){
-  const frames = Array.from(document.querySelectorAll('.founderScreen'));
+/* ------- Founders cinematic timeline (slow & cinematic: ~4s per founder) ------- */
+function runFoundersCinematic(){
+  const screens = Array.from(document.querySelectorAll('.founderScreen'));
   foundersWrap.style.display = 'block';
   foundersWrap.setAttribute('aria-hidden','false');
 
-  // Build timeline: each frame fades in full-screen, hold, then slide up to reveal next.
+  // Clean initial styles
+  screens.forEach(s => {
+    s.style.opacity = 0;
+    s.style.transform = 'scale(1)';
+    s.style.y = '0';
+  });
+
+  // timeline: each founder fade+zoom (4s hold-ish) then slide up to reveal next
   const tl = gsap.timeline({onComplete: revealMain});
-  frames.forEach((f, idx) => {
-    // ensure visible on entry
-    tl.to(f, {autoAlpha:1, duration:0.9, ease:'power3.out', onStart:()=> { f.style.pointerEvents = 'auto'; }});
-    // content pop
-    tl.fromTo(f.querySelector('.founderContent'), {y:20, opacity:0}, {y:0, opacity:1, duration:0.8, ease:'power3.out'}, '<');
-    // hold time
-    tl.to({}, {duration:1.6});
-    // exit: slide up (so next comes from bottom)
-    const exitY = (idx === frames.length - 1) ? -90 : -100; // last still slides up
-    tl.to(f, {yPercent:exitY, opacity:0, duration:0.85, ease:'power2.in'});
+  screens.forEach((s, idx) => {
+    // in: fade + gentle zoom in (from 1.04 to 1)
+    tl.fromTo(s, {autoAlpha:0, scale:1.04}, {autoAlpha:1, scale:1.0, duration:1.05, ease:'power3.out'});
+    // content pop slightly
+    tl.fromTo(s.querySelector('.founderInner'), {y:20, opacity:0}, {y:0, opacity:1, duration:.9, ease:'power3.out'}, '<');
+    // hold (cinematic)
+    tl.to({}, {duration:2.1}); // total visible time ~1.05 + .9 + 2.1 = ~4s
+    // exit: slide up percentage so next appears from bottom
+    // If last one, slide up a bit and then end
+    tl.to(s, {yPercent: -100, autoAlpha:0, duration:0.9, ease:'power2.in'});
   });
 }
 
-/* ---------- Reveal main ---------- */
+/* ------- Reveal main site after cinematic ------- */
 function revealMain(){
-  // hide founders wrap
   foundersWrap.style.display = 'none';
   foundersWrap.setAttribute('aria-hidden','true');
 
-  // show main
-  main.style.visibility = 'visible';
-  main.setAttribute('aria-hidden','false');
-  gsap.fromTo(main, {opacity:0, y:20}, {opacity:1, y:0, duration:1.1, ease:'power3.out', onComplete: initScrollAnims});
+  mainWrap.style.visibility = 'visible';
+  mainWrap.setAttribute('aria-hidden','false');
+  gsap.fromTo(mainWrap, {opacity:0, y:18}, {opacity:1, y:0, duration:1.2, ease:'power3.out', onComplete: initScrollAnims});
 }
 
-/* ---------- Scroll animations and nav active ---------- */
+/* ------- Scroll animations & nav highlight ------- */
 function initScrollAnims(){
   const secs = document.querySelectorAll('main section');
-  secs.forEach((s) => {
+  secs.forEach((sec) => {
     if (gsap && ScrollTrigger) {
-      gsap.fromTo(s, {opacity:0, y:28}, {
+      gsap.fromTo(sec, {opacity:0, y:28}, {
         opacity:1, y:0, duration:0.9, ease:'power3.out',
-        scrollTrigger: { trigger: s, start: "top 82%", toggleActions: "play none none none" }
+        scrollTrigger: { trigger: sec, start: "top 82%", toggleActions: "play none none none" }
       });
     } else {
-      s.style.opacity = 1; s.style.transform = 'translateY(0)';
+      sec.style.opacity = 1; sec.style.transform = 'translateY(0)';
     }
   });
 
-  // nav highlight on scroll
+  // nav highlight
   if (ScrollTrigger) {
-    secs.forEach(sec=>{
+    secs.forEach(sec => {
       ScrollTrigger.create({
         trigger: sec,
         start: "top 60%",
@@ -471,133 +492,151 @@ function initScrollAnims(){
     });
   }
 }
-function setActiveNav(id){ navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id)); }
+function setActiveNav(id){
+  document.querySelectorAll('.navBtn').forEach(b => b.classList.toggle('active', b.dataset.target === id));
+}
 
-/* ---------- Nav click smooth scroll ---------- */
-navBtns.forEach(btn=>{
-  btn.addEventListener('click', ()=>{
+/* ------- nav click smooth scroll ------- */
+document.querySelectorAll('.navBtn').forEach(btn => {
+  btn.addEventListener('click', () => {
     const target = document.getElementById(btn.dataset.target);
     if (!target) return;
     target.scrollIntoView({behavior:'smooth', block:'start'});
-    setTimeout(()=> target.focus({preventScroll:true}), 600);
   });
 });
 
-/* ---------- Scroll progress ---------- */
+/* ------- scroll progress bar ------- */
 window.addEventListener('scroll', ()=>{
-  const h = document.documentElement;
-  const scrollTop = h.scrollTop || document.body.scrollTop;
-  const height = h.scrollHeight - h.clientHeight;
-  const pct = Math.max(0, Math.min(1, scrollTop / height));
-  scrollProgress.style.width = (pct * 100) + '%';
+  const doc = document.documentElement;
+  const top = doc.scrollTop || document.body.scrollTop;
+  const height = doc.scrollHeight - doc.clientHeight;
+  const pct = Math.max(0, Math.min(1, top / height));
+  const bar = document.querySelector('#scrollProgress > i');
+  if (bar) bar.style.width = (pct*100) + '%';
 });
 
-/* ---------- Chat toggle & collapsible Q&A ---------- */
+/* ------- Chat VIPRADMA toggle & collapsibles ------- */
 chatBtn.addEventListener('click', toggleChat);
+chatClose.addEventListener('click', closeChat);
+chatClose.addEventListener('keyup', (e)=> { if (e.key === 'Enter') closeChat(); });
+
 function toggleChat(){
   const open = chatPanel.style.display === 'block';
   chatPanel.style.display = open ? 'none' : 'block';
   chatBtn.setAttribute('aria-expanded', String(!open));
   chatPanel.setAttribute('aria-hidden', String(open));
 }
-/* collapsible Q&A behavior */
-document.querySelectorAll('.qHead').forEach(head=>{
-  head.addEventListener('click', ()=> {
-    const body = head.nextElementSibling;
+function closeChat(){
+  chatPanel.style.display = 'none';
+  chatBtn.setAttribute('aria-expanded','false');
+  chatPanel.setAttribute('aria-hidden','true');
+}
+
+qHeads.forEach(h=>{
+  h.addEventListener('click', ()=> {
+    const body = h.nextElementSibling;
     const open = body.style.display === 'block';
-    if (!open) {
-      body.style.display = 'block';
-      head.querySelector('span').textContent = '–';
-      gsap.fromTo(body, {opacity:0, y:-6}, {opacity:1, y:0, duration:0.28});
+    if (open) {
+      gsap.to(body, {opacity:0, y:-6, duration:.22, onComplete: ()=> body.style.display = 'none'});
+      h.querySelector('span').textContent = '+';
     } else {
-      gsap.to(body, {opacity:0, y:-6, duration:0.22, onComplete: ()=> { body.style.display = 'none'; }});
-      head.querySelector('span').textContent = '+';
+      body.style.display = 'block';
+      gsap.fromTo(body, {opacity:0, y:-6}, {opacity:1, y:0, duration:.28});
+      h.querySelector('span').textContent = '–';
     }
   });
-  head.addEventListener('keyup', (e)=> { if (e.key === 'Enter') head.click(); });
+  h.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') h.click(); });
 });
 
-/* ---------- Ambient sound toggle ---------- */
-knob.dataset.on = 'false';
-soundToggle.addEventListener('click', toggleSound);
-soundToggle.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') toggleSound(); });
+/* ------- Ambient sound toggle (knob) ------- */
+knob && (knob.dataset = knob.dataset || {});
+knob && (knob.dataset.on = 'false');
+soundToggle && soundToggle.addEventListener('click', toggleSound);
+soundToggle && soundToggle.addEventListener('keyup', (e)=> { if (e.key === 'Enter') toggleSound(); });
+
 function toggleSound(){
-  const on = knob.dataset.on === 'true';
-  if (!on) {
-    knob.style.left = '24px'; knob.dataset.on = 'true';
+  if (!knob) return;
+  const isOn = knob.dataset.on === 'true';
+  if (!isOn) {
+    knob.style.left = '24px';
+    knob.dataset.on = 'true';
     soundToggle.setAttribute('aria-pressed','true');
-    try { const p = bgSound.play(); if (p && p.catch) p.catch(()=>{}); } catch(e){}
+    try { bgSound.play().catch(()=>{}); } catch(e){}
   } else {
-    knob.style.left = '4px'; knob.dataset.on = 'false';
+    knob.style.left = '4px';
+    knob.dataset.on = 'false';
     soundToggle.setAttribute('aria-pressed','false');
     try { bgSound.pause(); bgSound.currentTime = 0; } catch(e){}
   }
 }
 
-/* ---------- Simple tilt for elements with data-tilt ---------- */
-function initTiltables(){
-  const tiltEls = document.querySelectorAll('[data-tilt]');
+/* ------- Simple tilt for elements with data-tilt ------- */
+function initTilts(){
+  const tiltEls = document.querySelectorAll('[data-tilt], .tilt');
   tiltEls.forEach(el => {
     el.addEventListener('pointermove', (ev)=>{
       const r = el.getBoundingClientRect();
       const px = (ev.clientX - r.left) / r.width;
       const py = (ev.clientY - r.top) / r.height;
-      const rx = (py - 0.5) * 8;
-      const ry = (px - 0.5) * -8;
+      const rx = (py - 0.5) * 8; // tilt X
+      const ry = (px - 0.5) * -8; // tilt Y
       el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.01)`;
     });
     el.addEventListener('pointerleave', ()=> el.style.transform = '');
   });
 }
-initTiltables();
+initTilts();
 
-/* ---------- Neon cursor + trail (desktop only) ---------- */
-(function initCursor(){
+/* ------- Neon cursor trail (desktop only) ------- */
+(function initCursorTrail(){
   const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
   if (isTouch || window.innerWidth < 720) return;
+
   cursorDot.style.display = 'block';
   trailCanvas.style.display = 'block';
   const ctx = trailCanvas.getContext('2d');
   let w = trailCanvas.width = innerWidth;
   let h = trailCanvas.height = innerHeight;
-  const points = []; const maxPoints = 22;
+  const pts = []; const max = 28;
+
   window.addEventListener('resize', ()=> { w = trailCanvas.width = innerWidth; h = trailCanvas.height = innerHeight; });
-  window.addEventListener('pointermove', (e)=> {
+
+  window.addEventListener('pointermove', (e)=>{
     cursorDot.style.left = e.clientX + 'px';
     cursorDot.style.top = e.clientY + 'px';
     cursorDot.style.boxShadow = '0 0 12px 3px rgba(0,255,127,0.08)';
-    points.push({x:e.clientX, y:e.clientY});
-    if (points.length > maxPoints) points.shift();
+    pts.push({x:e.clientX, y:e.clientY});
+    if (pts.length > max) pts.shift();
   });
-  function draw(){
+
+  function render(){
     ctx.clearRect(0,0,w,h);
-    for (let i=0;i<points.length;i++){
-      const p = points[i];
-      const alpha = (i+1)/points.length * 0.35;
-      const size = 18 * ((i+1)/points.length) * 0.7;
+    for (let i=0;i<pts.length;i++){
+      const p = pts[i];
+      const alpha = (i+1)/pts.length * 0.36;
+      const size = 18 * ((i+1)/pts.length) * 0.78;
       ctx.beginPath();
       ctx.fillStyle = `rgba(0,255,127,${alpha})`;
       ctx.arc(p.x, p.y, size, 0, Math.PI*2);
       ctx.fill();
     }
-    requestAnimationFrame(draw);
+    requestAnimationFrame(render);
   }
-  draw();
+  render();
 })();
 
-/* ---------- Accessibility & small polish ---------- */
-document.addEventListener('keydown', (e)=> {
+/* ------- Accessibility / keyboard / small polish ------- */
+document.addEventListener('keydown', (e)=>{
   if (e.key === 'Escape') {
-    if (chatPanel.style.display === 'block') { chatPanel.style.display = 'none'; chatBtn.setAttribute('aria-expanded','false'); }
+    // close chat
+    chatPanel.style.display = 'none';
+    chatBtn.setAttribute('aria-expanded','false');
   }
 });
-document.querySelectorAll('button, [role="button"]').forEach(b=>{
-  b.addEventListener('focus', ()=> b.style.outline = '2px solid rgba(0,255,127,0.08)');
-  b.addEventListener('blur', ()=> b.style.outline = '');
-});
 
-/* ---------- Defensive error logging ---------- */
-window.addEventListener('error', (ev)=> console.error('JS Error:', ev.message || ev.error));
+/* ------- Defensive error logging ------- */
+window.addEventListener('error', (ev)=> { console.error('JS Error:', ev.message || ev.error); });
+
 </script>
 </body>
 </html>
