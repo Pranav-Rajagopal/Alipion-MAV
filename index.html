@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Elite Sci-Tech Prototype — v2</title>
+<title>Elite Sci-Tech Prototype — v3</title>
 
 <!-- Fonts + GSAP -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -20,49 +20,46 @@
     --max-width: 1200px;
     --radius: 12px;
   }
-
-  /* --- Base --- */
-  html,body{height:100%;margin:0;background:var(--bg);color:var(--neon);font-family:"Poppins",sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--neon);font-family:"Poppins",sans-serif;-webkit-font-smoothing:antialiased}
   *,*::before,*::after{box-sizing:border-box}
   a{color:inherit;text-decoration:none}
 
-  /* subtle background grid + vignette */
-  #gridBg{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.35;background:
+  /* background */
+  #gridBg{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.36;background:
     radial-gradient(circle at 10% 10%, rgba(0,255,127,0.03) 0%, rgba(0,0,0,0.9) 60%),
     repeating-linear-gradient(#00261a 0px,#00261a 2px,transparent 2px,transparent 56px),
     repeating-linear-gradient(90deg,#00261a 0px,#00261a 2px,transparent 2px,transparent 56px);
     filter:contrast(1.05) saturate(1.12);
   }
 
-  /* --- Neon loading overlay --- */
-  #neonLoader{
-    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;background:linear-gradient(180deg, rgba(0,0,0,0.98), rgba(0,0,0,0.95));
-    flex-direction:column;gap:18px;
-  }
+  /* NEON LOADER */
+  #neonLoader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:110;background:linear-gradient(180deg, rgba(0,0,0,0.98), rgba(0,0,0,0.95));flex-direction:column;gap:14px}
   #bootText{font-weight:600;letter-spacing:1.2px;color:var(--neon);opacity:0.96}
   #bootLine{font-family:monospace;font-size:.9rem;color:rgba(0,255,127,0.6)}
-  .loader-dot{width:8px;height:8px;border-radius:99px;background:var(--neon);opacity:.85;margin:0 4px;display:inline-block;transform:scale(.85)}
+  .loader-dot{width:8px;height:8px;border-radius:99px;background:var(--neon);opacity:.85;margin:0 4px;display:inline-block;transform:scale(.9)}
 
-  /* --- Intro (typing) --- */
-  #intro{position:fixed;inset:0;display:flex;flex-direction:column;gap:18px;align-items:center;justify-content:center;z-index:90;background:linear-gradient(180deg,rgba(0,0,0,0.0),rgba(0,0,0,0.45));pointer-events:auto}
-  #typingWrap{display:flex;flex-direction:column;align-items:center;gap:12px;}
+  /* TYPING INTRO */
+  #intro{position:fixed;inset:0;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;z-index:100;background:linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.45))}
   #typingText{font-size:3rem;font-weight:700;text-align:center;text-shadow:0 0 26px var(--neon);line-height:1.02}
-  #startBtn{margin-top:8px;padding:12px 32px;border-radius:12px;border:2px solid var(--neon);background:transparent;color:var(--neon);font-weight:700;cursor:pointer;transition:transform .14s, box-shadow .14s;opacity:0;transform:translateY(6px);outline:none}
-  #startBtn:focus{box-shadow:0 0 20px rgba(0,255,127,0.14)}
+  #startBtn{margin-top:8px;padding:12px 34px;border-radius:12px;border:2px solid var(--neon);background:transparent;color:var(--neon);font-weight:700;cursor:pointer;transition:transform .14s, box-shadow .14s;opacity:0;transform:translateY(8px);outline:none}
   #startBtn:hover{transform:scale(1.04);box-shadow:0 0 20px var(--neon);background:var(--neon);color:#000}
 
-  /* --- Founders cinematic overlay --- */
-  #foundersIntro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:28px;z-index:85;pointer-events:none;opacity:0}
-  .founderFrame{display:flex;align-items:center;gap:20px;background:linear-gradient(180deg, rgba(0,0,0,0.68), rgba(0,0,0,0.55));border-radius:14px;padding:18px;border:1px solid rgba(0,255,127,0.08);box-shadow:0 12px 60px rgba(0,255,127,0.03);max-width:calc(var(--max-width) - 120px);width:92%;}
-  .founderPhoto{width:220px;height:220px;border-radius:10px;overflow:hidden;border:2px solid rgba(0,255,127,0.14);flex:0 0 220px}
-  .founderPhoto img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.02)}
-  .founderInfo{flex:1;color:rgba(0,255,127,0.95);text-align:left}
-  .founderInfo h2{margin:0;font-size:1.4rem;letter-spacing:.6px}
-  .founderInfo p.role{margin:.6rem 0 10px;color:var(--neon);opacity:.94;font-weight:600}
-  .founderInfo p.bio{margin:0;color:rgba(0,255,127,0.82);line-height:1.6}
+  /* FOUNDERS - full-screen cinematic frames */
+  .founderScreen{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:95;background:rgba(0,0,0,0.85);flex-direction:column;padding:28px;gap:18px;opacity:0;pointer-events:none
+  }
+  .founderContent{max-width:1100px;width:92%;display:flex;align-items:center;gap:36px}
+  .founderImage{flex:0 0 46%;height:60vh;border-radius:12px;overflow:hidden;border:2px solid rgba(0,255,127,0.12)}
+  .founderImage img{width:100%;height:100%;object-fit:cover;display:block}
+  .founderText{flex:1;text-align:left;color:rgba(0,255,127,0.95)}
+  .founderText h1{margin:0;font-size:2.2rem;letter-spacing:.8px;text-shadow:0 0 26px rgba(0,255,127,0.06)}
+  .founderText p.role{margin:.6rem 0 10px;color:var(--neon);font-weight:700}
+  .founderText p.bio{margin:0;color:rgba(0,255,127,0.86);line-height:1.6}
 
-  /* --- Main layout --- */
+  /* MAIN (hidden until founders done) */
   #main{opacity:0;visibility:hidden;position:relative;z-index:10;min-height:100vh}
+
+  /* HEADER (sticky) */
   header{
     position:sticky;top:0;z-index:70;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.35));backdrop-filter: blur(6px);
     display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(0,255,127,0.04);
@@ -71,37 +68,40 @@
   .logo{font-weight:800;letter-spacing:1px;font-size:1.05rem}
   .tag{opacity:.7;font-size:.9rem}
 
-  /* top nav (scrollable on small screens) */
+  /* top nav */
   .topNav{display:flex;gap:10px;align-items:center;overflow:auto;padding:6px;border-radius:999px}
   .topNav::-webkit-scrollbar{height:8px}
-  .topNav::-webkit-scrollbar-thumb{background:rgba(0,255,127,0.06);border-radius:8px}
-  .navBtn{padding:10px 14px;border-radius:10px;border:1px solid rgba(0,255,127,0.09);background:transparent;cursor:pointer;white-space:nowrap;font-weight:600;transition:transform .15s,box-shadow .15s}
-  .navBtn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,255,127,0.04);border-color:var(--neon)}
-  .navBtn.active{background:linear-gradient(90deg, rgba(0,255,127,0.06), rgba(0,255,127,0.02));box-shadow:0 6px 28px rgba(0,255,127,0.04)}
+  .navBtn{padding:10px 14px;border-radius:10px;border:1px solid rgba(0,255,127,0.09);background:transparent;cursor:pointer;white-space:nowrap;font-weight:700;transition:transform .12s,box-shadow .12s;color:var(--neon)}
+  /*Glow for nav text*/
+  .navBtn, .logo { text-shadow: 0 0 8px rgba(0,255,127,0.12), 0 0 18px rgba(0,255,127,0.06); }
+  .navBtn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,255,127,0.06);border-color:var(--neon)}
+  .navBtn.active{background:linear-gradient(90deg, rgba(0,255,127,0.06), rgba(0,255,127,0.02));box-shadow:0 8px 40px rgba(0,255,127,0.04)}
 
-  /* scroll progress bar */
+  /* scroll progress */
   #scrollProgress{position:fixed;left:0;right:0;height:4px;top:0;z-index:120;background:linear-gradient(90deg, rgba(0,255,127,0.06), transparent)}
   #scrollProgress > i{display:block;height:100%;width:0;background:linear-gradient(90deg, var(--neon), rgba(0,255,127,0.5));box-shadow:0 6px 20px rgba(0,255,127,0.12) inset;transition:width .1s linear}
 
-  /* page sections */
+  /* page content */
   main{padding:36px 18px 120px;display:flex;flex-direction:column;align-items:center;gap:36px;max-width:var(--max-width);margin:0 auto}
   section{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 18px;text-align:center;gap:18px;opacity:0}
-  .title{font-size:2.1rem;font-weight:700;text-shadow:0 0 16px rgba(0,255,127,0.08)}
+  .title{font-size:2.1rem;font-weight:700;text-shadow:0 0 16px rgba(0,255,127,0.06)}
   .sub{max-width:980px;color:rgba(0,255,127,0.92);line-height:1.7;font-size:1.02rem}
   .panel{max-width:1100px;width:100%;margin-top:18px;display:flex;gap:20px;align-items:stretch;justify-content:center;flex-wrap:wrap}
 
   .media-preview{width:640px;max-width:92%;height:360px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,255,127,0.08);box-shadow:0 12px 40px rgba(0,255,127,0.02)}
   .blog-card{background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.48));border-radius:12px;padding:18px;text-align:left;border:1px solid rgba(0,255,127,0.04)}
 
-  /* tilt effect hint */
+  /* tiltable */
   .tiltable{transform-style:preserve-3d;will-change:transform;transition:transform .18s cubic-bezier(.2,.9,.3,1)}
 
-  /* chat */
-  #chatBtn{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;border:2px solid var(--neon);background:rgba(0,255,127,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:60;box-shadow:0 12px 40px rgba(0,255,127,0.04)}
-  #chatBadge{position:absolute;top:-6px;right:-6px;background:var(--neon);color:#000;border-radius:8px;padding:2px 6px;font-size:.7rem;font-weight:700}
-  #chatBox{position:fixed;right:20px;bottom:88px;width:320px;max-width:92%;background:var(--panel);backdrop-filter: blur(8px);border-radius:12px;border:1px solid rgba(0,255,127,0.08);padding:12px;display:none;z-index:61}
-  .qBtn{display:block;width:100%;padding:8px;margin:8px 0;border-radius:8px;border:1px solid rgba(0,255,127,0.08);background:transparent;color:var(--neon);cursor:pointer;text-align:left}
-  .answer{margin-top:6px;opacity:0;color:rgba(0,255,127,0.95);transition:opacity .25s}
+  /* CHAT (neon bubble icon + panel) */
+  #chatBtn{position:fixed;bottom:20px;right:20px;width:64px;height:64px;border-radius:999px;border:2px solid var(--neon);background:linear-gradient(180deg, rgba(0,255,127,0.03), rgba(0,255,127,0.01));display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:60;box-shadow:0 18px 60px rgba(0,255,127,0.06)}
+  #chatBtn svg{filter:drop-shadow(0 6px 22px rgba(0,255,127,0.08))}
+  #chatPanel{position:fixed;right:20px;bottom:96px;width:340px;max-width:92%;background:var(--panel);backdrop-filter: blur(8px);border-radius:12px;border:1px solid rgba(0,255,127,0.08);padding:12px;display:none;z-index:61}
+  .qa{margin:10px 0;border-radius:8px;overflow:hidden;border:1px solid rgba(0,255,127,0.06)}
+  .qHead{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;background:linear-gradient(90deg, rgba(0,255,127,0.02), transparent)}
+  .qHead strong{font-weight:700}
+  .qBody{padding:10px 12px;background:rgba(0,0,0,0.45);color:rgba(0,255,127,0.95);display:none}
 
   /* sound toggle */
   #soundToggle{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;border:1px solid rgba(0,255,127,0.06);cursor:pointer}
@@ -110,26 +110,25 @@
 
   footer{padding:40px 20px;text-align:center;color:rgba(0,255,127,0.6)}
 
-  /* neon cursor (desktop only) */
+  /* cursor & trail (desktop only) */
   .cursor{position:fixed;pointer-events:none;z-index:9999;width:18px;height:18px;border-radius:50%;transform:translate(-50%,-50%);mix-blend-mode:screen;display:none}
   .cursorTrail{position:fixed;pointer-events:none;z-index:9998;display:none}
 
   /* responsiveness */
   @media (max-width:980px){
-    .founderFrame{flex-direction:column;gap:12px;padding:16px}
-    .founderPhoto{width:160px;height:160px;flex:0 0 160px}
-    .founderInfo h2{font-size:1.1rem}
-    #typingText{font-size:2rem}
+    .founderContent{flex-direction:column;gap:18px}
+    .founderImage{width:84%;height:42vh}
+    .founderText h1{font-size:1.6rem}
+    #typingText{font-size:2.2rem}
     header{padding:12px 14px}
     .media-preview{height:220px}
   }
   @media (max-width:640px){
     #typingText{font-size:1.6rem}
     .navBtn{padding:8px 10px;font-size:.95rem}
-    .founderFrame{padding:12px}
-    .founderInfo p.bio{font-size:.95rem}
     .cursor{display:none}
     .cursorTrail{display:none}
+    .founderImage{height:34vh}
   }
 </style>
 </head>
@@ -146,23 +145,19 @@
   </div>
 </div>
 
-<!-- Intro / Typing -->
+<!-- Typing intro -->
 <div id="intro" aria-hidden="true">
-  <div id="typingWrap">
-    <div id="typingText" aria-live="polite" aria-atomic="true"></div>
-    <button id="startBtn" aria-label="Enter site">Enter</button>
-  </div>
+  <div id="typingText" aria-live="polite" aria-atomic="true"></div>
+  <button id="startBtn" aria-label="Enter site">Enter</button>
 </div>
 
-<!-- Founders cinematic overlay -->
-<div id="foundersIntro" role="dialog" aria-hidden="true">
-  <!-- We'll populate frames via JS for easy scaling -->
-</div>
+<!-- Founders full-screen frames (generated by JS) -->
+<div id="foundersWrap" aria-hidden="true"></div>
 
 <!-- Scroll progress bar -->
 <div id="scrollProgress" aria-hidden="true"><i></i></div>
 
-<!-- Main content -->
+<!-- Main content (revealed after founders) -->
 <div id="main" aria-hidden="true">
   <header role="banner">
     <div class="brand">
@@ -267,44 +262,62 @@
   </footer>
 </div>
 
-<!-- Chat -->
-<button id="chatBtn" title="Chat (VIPRADMA_07)" aria-haspopup="dialog" aria-expanded="false">◉ <span id="chatBadge">VIP</span></button>
-<div id="chatBox" role="dialog" aria-hidden="true">
-  <strong>VIPRADMA_07</strong>
-  <button class="qBtn" onclick="reply(this)">What is this project?</button>
-  <div class="answer"></div>
-  <button class="qBtn" onclick="reply(this)">Who built this?</button>
-  <div class="answer"></div>
-  <button class="qBtn" onclick="reply(this)">Future goals?</button>
-  <div class="answer"></div>
+<!-- Chat bubble icon -->
+<button id="chatBtn" title="Chat" aria-haspopup="dialog" aria-expanded="false" aria-controls="chatPanel">
+  <!-- neon-green chat bubble svg -->
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="none" fill="white" opacity="0.02"/>
+    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="none" fill="none"/>
+    <circle cx="8.5" cy="11" r="1.3" fill="#00ff7f"/>
+    <circle cx="12" cy="11" r="1.3" fill="#00ff7f"/>
+    <circle cx="15.5" cy="11" r="1.3" fill="#00ff7f"/>
+  </svg>
+</button>
+
+<!-- Chat panel -->
+<div id="chatPanel" role="dialog" aria-hidden="true">
+  <div style="font-weight:800;margin-bottom:8px">VIP Chat</div>
+
+  <div class="qa">
+    <div class="qHead" role="button" tabindex="0"><strong>What is this project?</strong><span>+</span></div>
+    <div class="qBody">A student-built fuel-based rocket prototype with AI-assisted landing.</div>
+  </div>
+
+  <div class="qa">
+    <div class="qHead" role="button" tabindex="0"><strong>Who built this?</strong><span>+</span></div>
+    <div class="qBody">Developed by students (Vishwajeeth V, Adikeshav S, Mahilesh) with support from SNP school.</div>
+  </div>
+
+  <div class="qa">
+    <div class="qHead" role="button" tabindex="0"><strong>Future goals?</strong><span>+</span></div>
+    <div class="qBody">Refine propulsion, improve safety, enter competitions and scale research collaboration.</div>
+  </div>
 </div>
 
 <!-- Audio -->
 <audio id="enterSound" src="assets/enter.mp3" preload="auto"></audio>
 <audio id="bgSound" src="assets/bg-loop.mp3" preload="auto" loop></audio>
 
-<!-- Neon cursor elements -->
+<!-- Cursor & canvas -->
 <div class="cursor" id="cursorDot" aria-hidden="true"></div>
 <canvas id="cursorTrail" class="cursorTrail" aria-hidden="true"></canvas>
 
 <script>
-/* ===============================
-   Utility & defensive initialization
-   =============================== */
-try { gsap.registerPlugin(ScrollTrigger); } catch(e){ console.warn('GSAP or ScrollTrigger not available', e); }
+/* Defensive plugin registration */
+try { gsap.registerPlugin(ScrollTrigger); } catch(e){ console.warn('gsap register failed', e); }
 
-/* Short selectors */
+/* Elements */
 const neonLoader = document.getElementById('neonLoader');
 const bootStep = document.getElementById('bootStep');
+const intro = document.getElementById('intro');
 const typingText = document.getElementById('typingText');
 const startBtn = document.getElementById('startBtn');
-const intro = document.getElementById('intro');
-const foundersIntro = document.getElementById('foundersIntro');
+const foundersWrap = document.getElementById('foundersWrap');
 const main = document.getElementById('main');
 const scrollProgress = document.querySelector('#scrollProgress > i');
 const navBtns = document.querySelectorAll('.navBtn');
 const chatBtn = document.getElementById('chatBtn');
-const chatBox = document.getElementById('chatBox');
+const chatPanel = document.getElementById('chatPanel');
 const enterSound = document.getElementById('enterSound');
 const bgSound = document.getElementById('bgSound');
 const soundToggle = document.getElementById('soundToggle');
@@ -312,156 +325,142 @@ const knob = document.getElementById('knob');
 const cursorDot = document.getElementById('cursorDot');
 const trailCanvas = document.getElementById('cursorTrail');
 
-/* ---------- Boot / Loader ---------- */
-(function bootSequence(){
-  // simple progressive loader so typing starts after boot
-  let pct = 0;
-  const t = setInterval(()=>{
-    pct += Math.floor(Math.random()*8)+4;
-    if (pct >= 100) pct = 100;
-    bootStep.textContent = pct + '%';
-    if (pct >= 100) {
-      clearInterval(t);
-      // fade out loader after a short hold
-      gsap.to(neonLoader, {opacity:0, duration:.7, delay:.5, onComplete:()=> neonLoader.style.display='none' });
-      // show intro (typing) slightly after loader removes
-      setTimeout(()=> startTypingSequence(), 850);
-    }
-  }, 120);
-})();
-
-/* ---------- Typing intro ---------- */
-const fullMsg = "Ready to dive in?";
-function startTypingSequence(){
-  intro.setAttribute('aria-hidden','false');
-  typingText.textContent = "";
-  startBtn.style.opacity = 0;
-  startBtn.style.transform = "translateY(6px)";
-  // type
-  let i = 0;
-  const speed = 60;
-  function type(){
-    if (i < fullMsg.length){
-      typingText.textContent += fullMsg[i++];
-      // slight neon pop
-      gsap.fromTo(typingText, {textShadow:'0 0 6px rgba(0,255,127,0.06)'}, {textShadow:'0 0 26px rgba(0,255,127,0.22)', duration:.14});
-      setTimeout(type, speed);
-    } else {
-      // show enter button
-      gsap.to(startBtn, {opacity:1, y:0, duration:.45, ease:'power2.out'});
-      // allow keyboard activation
-      startBtn.focus();
-    }
-  }
-  setTimeout(type, 200);
-}
-
-/* ---------- Founders data & automatic cinematic ---------- */
+/* Founders taken from your uploaded code */
 const founders = [
   {id:'vish', name:'Vishwajeeth V', role:'Lead Rocket Engineer', bio:'Lead on nozzle design, test protocols and assembly. Focused on high temperature materials and structural integrity.', img:'assets/Vishwajeeth.jpg'},
   {id:'adhi', name:'Adikeshav S', role:'Systems & Control Engineer', bio:'Embedded systems lead — sensor fusion, flight control and AI-assisted stabilization algorithms.', img:'assets/Adhikesav.jpg'},
   {id:'mahi', name:'Mahilesh', role:'Operations & Mission Support', bio:'Mission planning, operations coordination and test logistics. Ensures safety and documentation during tests.', img:'assets/Mahilesh.jpg'}
 ];
 
-// create founder frames dynamically (keeps HTML tidy & responsive)
-function buildFounderFrames(){
-  foundersIntro.innerHTML = ''; // clear
-  founders.forEach((f, idx)=>{
-    const frame = document.createElement('div');
-    frame.className = 'founderFrame';
-    frame.id = `founder-${f.id}`;
-    frame.innerHTML = `
-      <div class="founderPhoto"><img src="${f.img}" alt="${f.name} photo" loading="lazy"></div>
-      <div class="founderInfo">
-        <h2>${f.name}</h2>
-        <p class="role">${f.role}</p>
-        <p class="bio">${f.bio}</p>
+/* ---------- Boot loader ---------- */
+(function boot(){
+  let pct = 0;
+  const t = setInterval(()=>{
+    pct += Math.floor(Math.random()*9)+6;
+    if (pct >= 100) pct = 100;
+    bootStep.textContent = pct + '%';
+    if (pct >= 100){
+      clearInterval(t);
+      gsap.to(neonLoader, {opacity:0, duration:.7, delay:.5, onComplete:()=> neonLoader.style.display='none'});
+      setTimeout(()=> startTyping(), 700);
+    }
+  }, 110);
+})();
+
+/* ---------- Typing effect ---------- */
+const fullMsg = "Ready to dive in?";
+function startTyping(){
+  intro.setAttribute('aria-hidden','false');
+  typingText.textContent = '';
+  startBtn.style.opacity = 0; startBtn.style.transform = 'translateY(8px)';
+  let i = 0;
+  const speed = 60;
+  function type(){
+    if (i < fullMsg.length){
+      typingText.textContent += fullMsg[i++];
+      gsap.fromTo(typingText, {textShadow:'0 0 6px rgba(0,255,127,0.06)'}, {textShadow:'0 0 26px rgba(0,255,127,0.22)', duration:.14});
+      setTimeout(type, speed);
+    } else {
+      gsap.to(startBtn, {opacity:1, y:0, duration:.45, ease:'power2.out'});
+      startBtn.focus();
+    }
+  }
+  setTimeout(type, 200);
+}
+
+/* ---------- Build full-screen founder frames ---------- */
+function buildFullFounderScreens(){
+  foundersWrap.innerHTML = '';
+  founders.forEach((f,i) => {
+    const container = document.createElement('div');
+    container.className = 'founderScreen';
+    container.id = `founder-${f.id}`;
+    container.innerHTML = `
+      <div class="founderContent" role="dialog" aria-label="${f.name} introduction">
+        <div class="founderImage"><img src="${f.img}" alt="${f.name} photo" loading="lazy"></div>
+        <div class="founderText">
+          <h1>${f.name}</h1>
+          <p class="role">${f.role}</p>
+          <p class="bio">${f.bio}</p>
+        </div>
       </div>
     `;
-    frame.style.opacity = '0';
-    frame.style.transform = 'translateY(18px) scale(.98)';
-    foundersIntro.appendChild(frame);
+    foundersWrap.appendChild(container);
   });
 }
-buildFounderFrames();
+buildFullFounderScreens();
 
-/* ---------- Start flow on Enter ---------- */
+/* ---------- Start site: typing -> founders cinematic -> main ---------- */
 startBtn.addEventListener('click', startSite);
 startBtn.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') startBtn.click(); });
 
 function startSite(){
-  // play enter sound (guarded)
-  try {
-    if (enterSound) { const p = enterSound.play(); if (p && p.catch) p.catch(()=>{}); }
-  } catch(e){}
+  // play short enter sound
+  try { if (enterSound) { const p = enterSound.play(); if (p && p.catch) p.catch(()=>{}); } } catch(e){}
 
-  // hide intro visually
-  gsap.to(intro, {opacity:0, y:-80, duration:.9, ease:'power3.inOut', onComplete: ()=>intro.style.display='none' });
+  // hide intro
+  gsap.to(intro, {opacity:0, y:-80, duration:.9, ease:'power3.inOut', onComplete: ()=> intro.style.display='none' });
 
-  // start bg sound after short delay; only if user allows (toggle will control)
+  // show founders cinematic after short delay
+  setTimeout(()=> runFounderSequence(), 700);
+  // start background sound later if toggled on
   setTimeout(()=> {
-    if (bgSound && knob.dataset.on === 'true') {
-      const p = bgSound.play();
-      if (p && p.catch) p.catch(()=>console.warn('bg play blocked'));
+    if (knob && knob.dataset && knob.dataset.on === 'true') {
+      try { const p = bgSound.play(); if (p && p.catch) p.catch(()=>{}); } catch(e){}
     }
   }, 1200);
-
-  // show founders cinematic
-  setTimeout(()=> runFoundersCinematic(), 850);
 }
 
-/* ---------- Founders cinematic (automatic, one-by-one) ---------- */
-function runFoundersCinematic(){
-  foundersIntro.style.pointerEvents = 'auto';
-  foundersIntro.style.opacity = 1;
-  foundersIntro.setAttribute('aria-hidden','false');
+/* ---------- Founder cinematic (full-screen automatic) ---------- */
+function runFounderSequence(){
+  const frames = Array.from(document.querySelectorAll('.founderScreen'));
+  foundersWrap.style.display = 'block';
+  foundersWrap.setAttribute('aria-hidden','false');
 
-  const frames = Array.from(foundersIntro.children);
-  const tl = gsap.timeline({onComplete: finishFounders});
-  frames.forEach((frame, i) => {
-    // sequencing: enter -> hold -> exit
-    const enterFrom = (i % 2 === 0) ? {x:-180, opacity:0, scale:.98} : {x:180, opacity:0, scale:.98};
-    tl.fromTo(frame, {...enterFrom, y:0}, {x:0, opacity:1, scale:1, duration:0.9, ease:'power3.out'});
-    tl.to(frame, {duration:0.0}); // tiny spacing
-    tl.to(frame, {opacity:1, duration:0.8}); // hold
-    // slide info slightly for interest
-    tl.fromTo(frame.querySelector('.founderInfo'), {x:40, opacity:0}, {x:0, opacity:1, duration:.6, ease:'power2.out'}, '<');
-    // pause
-    tl.to({}, {duration:1.3});
-    // exit
-    const exitTo = (i % 2 === 0) ? {x:-220, opacity:0, duration:0.75, ease:'power2.in'} : {x:220, opacity:0, duration:0.75, ease:'power2.in'};
-    tl.to(frame, exitTo, '>');
+  // Build timeline: each frame fades in full-screen, hold, then slide up to reveal next.
+  const tl = gsap.timeline({onComplete: revealMain});
+  frames.forEach((f, idx) => {
+    // ensure visible on entry
+    tl.to(f, {autoAlpha:1, duration:0.9, ease:'power3.out', onStart:()=> { f.style.pointerEvents = 'auto'; }});
+    // content pop
+    tl.fromTo(f.querySelector('.founderContent'), {y:20, opacity:0}, {y:0, opacity:1, duration:0.8, ease:'power3.out'}, '<');
+    // hold time
+    tl.to({}, {duration:1.6});
+    // exit: slide up (so next comes from bottom)
+    const exitY = (idx === frames.length - 1) ? -90 : -100; // last still slides up
+    tl.to(f, {yPercent:exitY, opacity:0, duration:0.85, ease:'power2.in'});
   });
 }
 
-/* finish founders -> reveal main */
-function finishFounders(){
-  foundersIntro.style.pointerEvents = 'none';
-  foundersIntro.style.display = 'none';
+/* ---------- Reveal main ---------- */
+function revealMain(){
+  // hide founders wrap
+  foundersWrap.style.display = 'none';
+  foundersWrap.setAttribute('aria-hidden','true');
+
+  // show main
   main.style.visibility = 'visible';
   main.setAttribute('aria-hidden','false');
-  gsap.fromTo(main, {opacity:0, y:20}, {opacity:1, y:0, duration:1.1, ease:'power3.out', onComplete: initScrollAnimations});
+  gsap.fromTo(main, {opacity:0, y:20}, {opacity:1, y:0, duration:1.1, ease:'power3.out', onComplete: initScrollAnims});
 }
 
-/* ---------- Scroll animations (GSAP + ScrollTrigger) ---------- */
-function initScrollAnimations(){
+/* ---------- Scroll animations and nav active ---------- */
+function initScrollAnims(){
   const secs = document.querySelectorAll('main section');
   secs.forEach((s) => {
     if (gsap && ScrollTrigger) {
       gsap.fromTo(s, {opacity:0, y:28}, {
-        opacity:1, y:0, duration:0.92, ease:'power3.out',
+        opacity:1, y:0, duration:0.9, ease:'power3.out',
         scrollTrigger: { trigger: s, start: "top 82%", toggleActions: "play none none none" }
       });
     } else {
-      // fallback
-      s.style.opacity = 1;
-      s.style.transform = 'translateY(0)';
+      s.style.opacity = 1; s.style.transform = 'translateY(0)';
     }
   });
 
-  // nav active highlight on scroll
+  // nav highlight on scroll
   if (ScrollTrigger) {
-    document.querySelectorAll('main section').forEach(sec=>{
+    secs.forEach(sec=>{
       ScrollTrigger.create({
         trigger: sec,
         start: "top 60%",
@@ -472,22 +471,19 @@ function initScrollAnimations(){
     });
   }
 }
+function setActiveNav(id){ navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id)); }
 
-/* ---------- Navigation behavior ---------- */
+/* ---------- Nav click smooth scroll ---------- */
 navBtns.forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const target = document.getElementById(btn.dataset.target);
     if (!target) return;
-    // smooth scroll and focus
     target.scrollIntoView({behavior:'smooth', block:'start'});
     setTimeout(()=> target.focus({preventScroll:true}), 600);
   });
 });
-function setActiveNav(id){
-  navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id));
-}
 
-/* ---------- Scroll progress bar ---------- */
+/* ---------- Scroll progress ---------- */
 window.addEventListener('scroll', ()=>{
   const h = document.documentElement;
   const scrollTop = h.scrollTop || document.body.scrollTop;
@@ -496,38 +492,40 @@ window.addEventListener('scroll', ()=>{
   scrollProgress.style.width = (pct * 100) + '%';
 });
 
-/* ---------- Chat box ---------- */
-chatBtn.addEventListener('click', ()=>{
-  const open = chatBox.style.display === 'block';
-  chatBox.style.display = open ? 'none' : 'block';
+/* ---------- Chat toggle & collapsible Q&A ---------- */
+chatBtn.addEventListener('click', toggleChat);
+function toggleChat(){
+  const open = chatPanel.style.display === 'block';
+  chatPanel.style.display = open ? 'none' : 'block';
   chatBtn.setAttribute('aria-expanded', String(!open));
-  chatBox.setAttribute('aria-hidden', String(open));
-});
-function reply(btn){
-  const ans = btn.nextElementSibling;
-  const q = (btn && btn.textContent) ? btn.textContent.trim() : '';
-  let text = '';
-  if (q === 'What is this project?') text = 'A student-built fuel-based rocket prototype with AI-assisted landing.';
-  else if (q === 'Who built this?') text = 'Developed by students (Vishwajeeth V, Adikeshav S, Mahilesh) with support from SNP school.';
-  else if (q === 'Future goals?') text = 'Refine propulsion, improve safety, enter competitions and scale research collaboration.';
-  ans.textContent = text;
-  ans.style.opacity = 1;
+  chatPanel.setAttribute('aria-hidden', String(open));
 }
-window.reply = reply;
+/* collapsible Q&A behavior */
+document.querySelectorAll('.qHead').forEach(head=>{
+  head.addEventListener('click', ()=> {
+    const body = head.nextElementSibling;
+    const open = body.style.display === 'block';
+    if (!open) {
+      body.style.display = 'block';
+      head.querySelector('span').textContent = '–';
+      gsap.fromTo(body, {opacity:0, y:-6}, {opacity:1, y:0, duration:0.28});
+    } else {
+      gsap.to(body, {opacity:0, y:-6, duration:0.22, onComplete: ()=> { body.style.display = 'none'; }});
+      head.querySelector('span').textContent = '+';
+    }
+  });
+  head.addEventListener('keyup', (e)=> { if (e.key === 'Enter') head.click(); });
+});
 
 /* ---------- Ambient sound toggle ---------- */
-(function initSoundToggle(){
-  // preserve state in knob.dataset.on (defaults false)
-  knob.dataset.on = 'false';
-  soundToggle.addEventListener('click', toggleSound);
-  soundToggle.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') toggleSound(); });
-})();
+knob.dataset.on = 'false';
+soundToggle.addEventListener('click', toggleSound);
+soundToggle.addEventListener('keyup', (e)=>{ if (e.key === 'Enter') toggleSound(); });
 function toggleSound(){
   const on = knob.dataset.on === 'true';
   if (!on) {
     knob.style.left = '24px'; knob.dataset.on = 'true';
     soundToggle.setAttribute('aria-pressed','true');
-    // try to play background (user gesture required)
     try { const p = bgSound.play(); if (p && p.catch) p.catch(()=>{}); } catch(e){}
   } else {
     knob.style.left = '4px'; knob.dataset.on = 'false';
@@ -536,59 +534,41 @@ function toggleSound(){
   }
 }
 
-/* ---------- Simple 3D tilt effect (no dependency) ---------- */
+/* ---------- Simple tilt for elements with data-tilt ---------- */
 function initTiltables(){
   const tiltEls = document.querySelectorAll('[data-tilt]');
   tiltEls.forEach(el => {
-    const rect = () => el.getBoundingClientRect();
     el.addEventListener('pointermove', (ev)=>{
-      const r = rect();
+      const r = el.getBoundingClientRect();
       const px = (ev.clientX - r.left) / r.width;
       const py = (ev.clientY - r.top) / r.height;
-      const rx = (py - 0.5) * 8; // tilt X
-      const ry = (px - 0.5) * -8; // tilt Y
+      const rx = (py - 0.5) * 8;
+      const ry = (px - 0.5) * -8;
       el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.01)`;
     });
-    el.addEventListener('pointerleave', ()=> {
-      el.style.transform = '';
-    });
+    el.addEventListener('pointerleave', ()=> el.style.transform = '');
   });
 }
 initTiltables();
 
-/* ---------- Lazy friendly: ensure images that will be animated are loaded minimally ---------- */
-document.querySelectorAll('img[loading="lazy"]').forEach(img=>{
-  img.addEventListener('error', ()=>{ img.style.opacity = .9; });
-});
-
 /* ---------- Neon cursor + trail (desktop only) ---------- */
 (function initCursor(){
   const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-  if (isTouch || window.innerWidth < 720) {
-    // hide cursor effects on small screens
-    return;
-  }
+  if (isTouch || window.innerWidth < 720) return;
   cursorDot.style.display = 'block';
   trailCanvas.style.display = 'block';
   const ctx = trailCanvas.getContext('2d');
   let w = trailCanvas.width = innerWidth;
   let h = trailCanvas.height = innerHeight;
-  const points = [];
-  const maxPoints = 22;
-
-  window.addEventListener('resize', ()=>{
-    w = trailCanvas.width = innerWidth; h = trailCanvas.height = innerHeight;
-  });
-
-  window.addEventListener('pointermove', (e)=>{
+  const points = []; const maxPoints = 22;
+  window.addEventListener('resize', ()=> { w = trailCanvas.width = innerWidth; h = trailCanvas.height = innerHeight; });
+  window.addEventListener('pointermove', (e)=> {
     cursorDot.style.left = e.clientX + 'px';
     cursorDot.style.top = e.clientY + 'px';
     cursorDot.style.boxShadow = '0 0 12px 3px rgba(0,255,127,0.08)';
-    // trail
-    points.push({x:e.clientX, y:e.clientY, t:Date.now()});
+    points.push({x:e.clientX, y:e.clientY});
     if (points.length > maxPoints) points.shift();
   });
-
   function draw(){
     ctx.clearRect(0,0,w,h);
     for (let i=0;i<points.length;i++){
@@ -605,15 +585,12 @@ document.querySelectorAll('img[loading="lazy"]').forEach(img=>{
   draw();
 })();
 
-/* ---------- Accessibility helpers ---------- */
-document.addEventListener('keydown', (e)=>{
+/* ---------- Accessibility & small polish ---------- */
+document.addEventListener('keydown', (e)=> {
   if (e.key === 'Escape') {
-    // hide any overlays
-    if (chatBox.style.display === 'block') { chatBox.style.display = 'none'; chatBtn.setAttribute('aria-expanded','false'); }
+    if (chatPanel.style.display === 'block') { chatPanel.style.display = 'none'; chatBtn.setAttribute('aria-expanded','false'); }
   }
 });
-
-/* ---------- Small polish: enable smooth link focus and tab navigation ---------- */
 document.querySelectorAll('button, [role="button"]').forEach(b=>{
   b.addEventListener('focus', ()=> b.style.outline = '2px solid rgba(0,255,127,0.08)');
   b.addEventListener('blur', ()=> b.style.outline = '');
@@ -621,7 +598,6 @@ document.querySelectorAll('button, [role="button"]').forEach(b=>{
 
 /* ---------- Defensive error logging ---------- */
 window.addEventListener('error', (ev)=> console.error('JS Error:', ev.message || ev.error));
-
 </script>
 </body>
 </html>
